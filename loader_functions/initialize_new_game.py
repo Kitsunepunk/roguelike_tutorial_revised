@@ -34,11 +34,14 @@ def get_constants():
     message_height = panel_height - 1
 
     map_width = 80
-    map_height = 43
+    map_height = 80
+
+    camera_width = 80
+    camera_height = 43
 
     room_max_size = 10
     room_min_size = 6
-    max_rooms = 30
+    max_rooms = 50
 
     fov_algorithm = 0
     fov_light_walls = True
@@ -74,7 +77,9 @@ def get_constants():
         'fov_radius': fov_radius,
         'max_monsters_per_room': max_monsters_per_room,
         'max_items_per_room': max_items_per_room,
-        'colors': colors
+        'colors': colors,
+        'camera_width': camera_width,
+        'camera_height': camera_height
     }
 
     return constants

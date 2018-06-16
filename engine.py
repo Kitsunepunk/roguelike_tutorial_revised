@@ -1,5 +1,6 @@
 import libtcodpy as libtcod
 
+from camera import Camera
 from death_functions import kill_monster, kill_player
 from entity import get_blocking_entities_at_location
 from fov_functions import initialize_fov, recompute_fov
@@ -25,6 +26,8 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
     targeting_item = None
 
+    camera = Camera(constants['camera_width'], constants['camera_height'], 0, 0)
+
     while not libtcod.console_is_window_closed():
         libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
@@ -34,13 +37,14 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log,
                    constants['screen_width'], constants['screen_height'], constants['bar_width'],
-                   constants['panel_height'], constants['panel_y'], mouse, constants['colors'], game_state)
+                   constants['panel_height'], constants['panel_y'], mouse, constants['colors'], game_state,
+                   camera)
 
         fov_recompute = False
 
         libtcod.console_flush()
 
-        clear_all(con, entities)
+        clear_all(con, entities, camera)
 
         action = handle_keys(key, game_state)
         mouse_action = handle_mouse(mouse)
@@ -139,7 +143,8 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 
         if game_state == GameStates.TARGETING:
             if left_click:
-                target_x, target_y = left_click
+                (target_x, target_y) = left_click
+                (target_x, target_y) = (camera.x + target_x, camera.y + target_y)
 
                 item_use_results = player.inventory.use(targeting_item, entities=entities, fov_map=fov_map,
                                                         target_x=target_x, target_y=target_y)
